@@ -5,7 +5,7 @@ import 'data/repositories/mock_auth_repository.dart';
 import 'data/repositories/mock_post_repository.dart';
 
 void main() {
-  FlavorConfig.appFlavor = Flavor.prod;
+  FlavorConfig.appFlavor = Flavor.dev;
   final authRepository = MockAuthRepository();
   final postRepository = MockPostRepository();
 
