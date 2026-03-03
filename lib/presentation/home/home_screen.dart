@@ -1,29 +1,13 @@
+import 'package:flavor_memo_app/presentation/home/home_action.dart';
+import 'package:flavor_memo_app/presentation/home/home_state.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../../domain/repository/auth_repository.dart';
 import '../component/post_widget.dart';
-import 'home_view_model.dart';
 
-class HomeScreen extends StatefulWidget {
-  final HomeViewModel viewModel;
-  final AuthRepository authRepository;
+class HomeScreen extends StatelessWidget {
+  final HomeState state;
+  final Function(HomeAction) onAction;
 
-  const HomeScreen({
-    super.key,
-    required this.viewModel,
-    required this.authRepository,
-  });
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-    widget.viewModel.fetchPosts();
-  }
+  const HomeScreen({super.key, required this.state, required this.onAction});
 
   @override
   Widget build(BuildContext context) {
@@ -31,41 +15,21 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('Flavor Memo'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              await widget.authRepository.logout();
-              if (mounted && context.mounted) context.go('/login');
-            },
-          ),
+          IconButton(icon: const Icon(Icons.logout), onPressed: () async {}),
         ],
       ),
-      body: ListenableBuilder(
-        listenable: widget.viewModel,
-        builder: (context, _) {
-          if (widget.viewModel.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (widget.viewModel.errorMessage != null) {
-            return Center(
-              child: Text('에러 발생: ${widget.viewModel.errorMessage}'),
-            );
-          }
-          final posts = widget.viewModel.posts;
-          if (posts.isEmpty) {
-            return const Center(child: Text('게시물이 없습니다.'));
-          }
-          return RefreshIndicator(
-            onRefresh: () async => widget.viewModel.fetchPosts(),
-            child: ListView.builder(
-              itemCount: posts.length,
-              itemBuilder: (context, index) => PostWidget(post: posts[index]),
+      body: state.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : RefreshIndicator(
+              onRefresh: () async => onAction(const HomeAction.loadPosts()),
+              child: ListView.builder(
+                itemCount: state.posts.length,
+                itemBuilder: (context, index) =>
+                    PostWidget(post: state.posts[index]),
+              ),
             ),
-          );
-        },
-      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go('/add'),
+        onPressed: () => onAction(const HomeAction.addPost()),
         child: const Icon(Icons.add_a_photo),
       ),
     );

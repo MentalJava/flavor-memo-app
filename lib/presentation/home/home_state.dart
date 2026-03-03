@@ -9,6 +9,12 @@ class HomeState with _$HomeState {
   final List<Post> posts;
   @override
   final bool isLoading;
+  @override
+  final String? errorMessage;
 
-  const HomeState({this.posts = const [], this.isLoading = false});
+  const HomeState({
+    this.posts = const [],
+    this.isLoading = false,
+    this.errorMessage,
+  });
 }

@@ -1,8 +1,8 @@
+import 'package:flavor_memo_app/presentation/home/home_root.dart';
 import 'package:go_router/go_router.dart';
 import '../domain/repository/auth_repository.dart';
 import '../domain/repository/post_repository.dart';
 import 'login/login_screen.dart';
-import 'home/home_screen.dart';
 import 'home/home_view_model.dart';
 import 'add_post/add_post_screen.dart';
 
@@ -31,10 +31,14 @@ class AppRouter {
       ),
       GoRoute(
         path: '/',
-        builder: (context, state) => HomeScreen(
-          viewModel: HomeViewModel(postRepository: postRepository),
-          authRepository: authRepository,
-        ),
+        builder: (context, state) {
+          final viewModel = HomeViewModel(
+            postRepository: postRepository,
+            authRepository: authRepository,
+          );
+          viewModel.fetchPosts();
+          return HomeRoot(viewModel: viewModel);
+        },
         routes: [
           GoRoute(
             path: 'add',
