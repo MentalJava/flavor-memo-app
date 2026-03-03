@@ -1,12 +1,20 @@
-import 'package:flavor_memo_app/my_app.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:io';
 import '../../domain/models/post.dart';
+import '../../domain/repository/auth_repository.dart';
+import '../../domain/repository/post_repository.dart';
 
 class AddPostScreen extends StatefulWidget {
-  const AddPostScreen({super.key});
+  final AuthRepository authRepository;
+  final PostRepository postRepository;
+
+  const AddPostScreen({
+    super.key,
+    required this.authRepository,
+    required this.postRepository,
+  });
 
   @override
   State<AddPostScreen> createState() => _AddPostScreenState();
@@ -35,7 +43,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
 
     setState(() => _isUploading = true);
     try {
-      final user = MyApp.of(context).authRepository.currentUser;
+      final user = widget.authRepository.currentUser;
       final newPost = Post(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         userId: user?.id ?? 'anonymous',
@@ -44,7 +52,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
         createdAt: DateTime.now(),
       );
 
-      await MyApp.of(context).postRepository.addPost(newPost);
+      await widget.postRepository.addPost(newPost);
       if (mounted) context.go('/');
     } catch (e) {
       if (mounted) {

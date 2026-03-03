@@ -9,16 +9,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:flavor_memo_app/my_app.dart';
-import 'package:flavor_memo_app/data/repositories/mock_auth_repository.dart';
-import 'package:flavor_memo_app/data/repositories/mock_post_repository.dart';
+import 'package:flavor_memo_app/data/repository/mock_auth_repository_impl.dart';
+import 'package:flavor_memo_app/data/repository/mock_post_repository_impl.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(
       MyApp(
-        authRepository: MockAuthRepository(),
-        postRepository: MockPostRepository(),
+        authRepository: MockAuthRepositoryImpl(),
+        postRepository: MockPostRepositoryImpl(),
       ),
     );
 

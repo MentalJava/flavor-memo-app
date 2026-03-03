@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import '../../domain/models/user.dart';
-import '../../domain/repositories/auth_repository.dart';
+import '../../domain/repository/auth_repository.dart';
 
 class MockAuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
   final _controller = StreamController<User?>.broadcast();

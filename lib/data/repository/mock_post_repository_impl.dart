@@ -1,5 +1,5 @@
 import '../../domain/models/post.dart';
-import '../../domain/repositories/post_repository.dart';
+import '../../domain/repository/post_repository.dart';
 
 class MockPostRepositoryImpl implements PostRepository {
   final List<Post> _posts = [

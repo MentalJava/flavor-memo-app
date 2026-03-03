@@ -1,5 +1,5 @@
-import 'package:flavor_memo_app/domain/repositories/auth_repository.dart';
-import 'package:flavor_memo_app/domain/repositories/post_repository.dart';
+import 'package:flavor_memo_app/domain/repository/auth_repository.dart';
+import 'package:flavor_memo_app/domain/repository/post_repository.dart';
 import 'package:flavor_memo_app/presentation/component/flavor_banner.dart';
 import 'package:flavor_memo_app/presentation/router.dart';
 import 'package:flavor_memo_app/presentation/theme/app_theme.dart';
@@ -29,7 +29,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _appRouter = AppRouter(widget.authRepository);
+    _appRouter = AppRouter(widget.authRepository, widget.postRepository);
   }
 
   @override

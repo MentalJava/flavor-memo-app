@@ -1,13 +1,16 @@
 import 'package:go_router/go_router.dart';
-import '../domain/repositories/auth_repository.dart';
-import 'screens/login_screen.dart';
-import 'screens/home_screen.dart';
-import 'screens/add_post_screen.dart';
+import '../domain/repository/auth_repository.dart';
+import '../domain/repository/post_repository.dart';
+import 'login/login_screen.dart';
+import 'home/home_screen.dart';
+import 'home/home_view_model.dart';
+import 'add_post/add_post_screen.dart';
 
 class AppRouter {
   final AuthRepository authRepository;
+  final PostRepository postRepository;
 
-  AppRouter(this.authRepository);
+  AppRouter(this.authRepository, this.postRepository);
 
   late final router = GoRouter(
     initialLocation: '/login',
@@ -21,14 +24,24 @@ class AppRouter {
       return null;
     },
     routes: [
-      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+      GoRoute(
+        path: '/login',
+        builder: (context, state) =>
+            LoginScreen(authRepository: authRepository),
+      ),
       GoRoute(
         path: '/',
-        builder: (context, state) => const HomeScreen(),
+        builder: (context, state) => HomeScreen(
+          viewModel: HomeViewModel(postRepository: postRepository),
+          authRepository: authRepository,
+        ),
         routes: [
           GoRoute(
             path: 'add',
-            builder: (context, state) => const AddPostScreen(),
+            builder: (context, state) => AddPostScreen(
+              authRepository: authRepository,
+              postRepository: postRepository,
+            ),
           ),
         ],
       ),

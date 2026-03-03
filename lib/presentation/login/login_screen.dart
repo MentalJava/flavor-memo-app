@@ -1,8 +1,10 @@
-import 'package:flavor_memo_app/my_app.dart';
 import 'package:flutter/material.dart';
+import '../../domain/repository/auth_repository.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final AuthRepository authRepository;
+
+  const LoginScreen({super.key, required this.authRepository});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -16,9 +18,10 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _handleLogin() async {
     setState(() => _isLoading = true);
     try {
-      await MyApp.of(
-        context,
-      ).authRepository.login(_emailController.text, _passwordController.text);
+      await widget.authRepository.login(
+        _emailController.text,
+        _passwordController.text,
+      );
       if (mounted) {
         // GoRouter redirect will handle navigation once state changes
         // Since we didn't implement a proper Listenable in router yet,
