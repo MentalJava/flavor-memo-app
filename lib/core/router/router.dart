@@ -1,16 +1,14 @@
+import 'package:flavor_memo_app/core/di/di_setup.dart';
 import 'package:flavor_memo_app/presentation/home/home_root.dart';
 import 'package:go_router/go_router.dart';
-import '../domain/repository/auth_repository.dart';
-import '../domain/repository/post_repository.dart';
-import 'login/login_screen.dart';
-import 'home/home_view_model.dart';
-import 'add_post/add_post_screen.dart';
+import '../../domain/repository/auth_repository.dart';
+import '../../domain/repository/post_repository.dart';
+import '../../presentation/login/login_screen.dart';
+import '../../presentation/home/home_view_model.dart';
+import '../../presentation/add_post/add_post_screen.dart';
 
 class AppRouter {
-  final AuthRepository authRepository;
-  final PostRepository postRepository;
-
-  AppRouter(this.authRepository, this.postRepository);
+  final AuthRepository authRepository = getIt<AuthRepository>();
 
   late final router = GoRouter(
     initialLocation: '/login',
@@ -32,10 +30,7 @@ class AppRouter {
       GoRoute(
         path: '/',
         builder: (context, state) {
-          final viewModel = HomeViewModel(
-            postRepository: postRepository,
-            authRepository: authRepository,
-          );
+          final viewModel = getIt<HomeViewModel>();
           viewModel.fetchPosts();
           return HomeRoot(viewModel: viewModel);
         },
@@ -44,7 +39,7 @@ class AppRouter {
             path: 'add',
             builder: (context, state) => AddPostScreen(
               authRepository: authRepository,
-              postRepository: postRepository,
+              postRepository: getIt<PostRepository>(),
             ),
           ),
         ],

@@ -32,14 +32,5 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> _logOut() async {
-    try {
-      await authRepository.logout();
-    } catch (e) {
-      _state = _state.copyWith(errorMessage: '로그아웃 실패: $e');
-      notifyListeners();
-    }
-  }
-
   void _addPost() {}
 }
