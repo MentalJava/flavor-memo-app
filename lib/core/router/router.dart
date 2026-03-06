@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import '../../domain/repository/auth_repository.dart';
 import '../../presentation/login/login_screen.dart';
 import '../../presentation/home/home_view_model.dart';
-import '../../presentation/add_post/add_post_screen.dart';
 
 class AppRouter {
   final AuthRepository authRepository = getIt<AuthRepository>();
