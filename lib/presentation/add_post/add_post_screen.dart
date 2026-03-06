@@ -1,68 +1,26 @@
+import 'package:flavor_memo_app/presentation/add_post/add_post_action.dart';
+import 'package:flavor_memo_app/presentation/add_post/add_post_state.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:io';
-import '../../domain/models/post.dart';
-import '../../domain/repository/auth_repository.dart';
-import '../../domain/repository/post_repository.dart';
 
 class AddPostScreen extends StatefulWidget {
-  final AuthRepository authRepository;
-  final PostRepository postRepository;
+  final AddPostState state;
+  final Function(AddPostAction) onAction;
 
-  const AddPostScreen({
-    super.key,
-    required this.authRepository,
-    required this.postRepository,
-  });
+  const AddPostScreen({super.key, required this.state, required this.onAction});
 
   @override
-  State<AddPostScreen> createState() => _AddPostScreenState();
+  State<StatefulWidget> createState() => _AddPostScreenState();
 }
 
 class _AddPostScreenState extends State<AddPostScreen> {
-  final _captionController = TextEditingController();
-  File? _image;
-  final _picker = ImagePicker();
-  bool _isUploading = false;
+  final _contentController = TextEditingController();
 
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() => _image = File(pickedFile.path));
-    }
-  }
-
-  Future<void> _handleShare() async {
-    if (_image == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('사진을 선택해주세요.')));
-      return;
-    }
-
-    setState(() => _isUploading = true);
-    try {
-      final user = widget.authRepository.currentUser;
-      final newPost = Post(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        userId: user?.id ?? 'anonymous',
-        imagePath: _image!.path,
-        caption: _captionController.text,
-        createdAt: DateTime.now(),
-      );
-
-      await widget.postRepository.addPost(newPost);
-      if (mounted) context.go('/');
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('게시 중 에러 발생: $e')));
-      }
-    } finally {
-      if (mounted) setState(() => _isUploading = false);
-    }
+  @override
+  void dispose() {
+    _contentController.dispose();
+    super.dispose();
   }
 
   @override
@@ -76,7 +34,11 @@ class _AddPostScreenState extends State<AddPostScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: _isUploading ? null : _handleShare,
+            onPressed: widget.state.isUploading
+                ? null
+                : () => widget.onAction(
+                    AddPostAction.onUpload(_contentController.text),
+                  ),
             child: const Text(
               '공유',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -87,14 +49,14 @@ class _AddPostScreenState extends State<AddPostScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            if (_isUploading) const LinearProgressIndicator(),
+            if (widget.state.isUploading) const LinearProgressIndicator(),
             GestureDetector(
-              onTap: _pickImage,
+              onTap: () => widget.onAction(const AddPostAction.onPickImage()),
               child: AspectRatio(
                 aspectRatio: 1,
                 child: Container(
                   color: Colors.grey[200],
-                  child: _image == null
+                  child: widget.state.imagePath == null
                       ? const Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -107,14 +69,17 @@ class _AddPostScreenState extends State<AddPostScreen> {
                             Text('클릭하여 사진 선택'),
                           ],
                         )
-                      : Image.file(_image!, fit: BoxFit.cover),
+                      : Image.file(
+                          File(widget.state.imagePath!),
+                          fit: BoxFit.cover,
+                        ),
                 ),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
-                controller: _captionController,
+                controller: _contentController,
                 decoration: const InputDecoration(
                   hintText: '문구 입력...',
                   border: InputBorder.none,

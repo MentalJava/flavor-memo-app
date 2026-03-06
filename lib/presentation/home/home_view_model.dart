@@ -10,11 +10,17 @@ class HomeViewModel extends ChangeNotifier {
 
   HomeViewModel({required this.postRepository, required this.authRepository});
 
-  HomeState _state = const HomeState();
+  HomeState _state = HomeState();
   HomeState get state => _state;
 
   void onAction(HomeAction action) {
-    action.when(loadPosts: fetchPosts, addPost: () => _addPost());
+    switch (action) {
+      case LoadPosts():
+        fetchPosts();
+        break;
+      case AddPost():
+        break;
+    }
   }
 
   Future<void> fetchPosts() async {
@@ -31,6 +37,4 @@ class HomeViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  void _addPost() {}
 }

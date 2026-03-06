@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import '../../domain/models/user.dart';
+import '../../domain/model/user.dart';
 import '../../domain/repository/auth_repository.dart';
 
 class MockAuthRepositoryImpl extends ChangeNotifier implements AuthRepository {

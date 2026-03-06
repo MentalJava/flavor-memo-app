@@ -1,4 +1,4 @@
-import '../models/post.dart';
+import '../model/post.dart';
 
 abstract interface class PostRepository {
   Future<List<Post>> getPosts();

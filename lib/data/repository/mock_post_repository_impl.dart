@@ -1,4 +1,4 @@
-import '../../domain/models/post.dart';
+import '../../domain/model/post.dart';
 import '../../domain/repository/post_repository.dart';
 
 class MockPostRepositoryImpl implements PostRepository {

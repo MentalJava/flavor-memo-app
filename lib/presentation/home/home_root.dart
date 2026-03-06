@@ -19,7 +19,7 @@ class HomeRoot extends StatelessWidget {
           onAction: (action) {
             switch (action) {
               case AddPost():
-                context.go('/add');
+                context.push('/add');
                 break;
               case LoadPosts():
                 viewModel.onAction(action);

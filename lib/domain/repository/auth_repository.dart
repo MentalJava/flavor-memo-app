@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import '../models/user.dart';
+import '../model/user.dart';
 
 abstract interface class AuthRepository extends Listenable {
   Stream<User?> get userStatus;

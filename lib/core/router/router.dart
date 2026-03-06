@@ -1,8 +1,9 @@
 import 'package:flavor_memo_app/core/di/di_setup.dart';
+import 'package:flavor_memo_app/presentation/add_post/add_post_root.dart';
+import 'package:flavor_memo_app/presentation/add_post/add_post_view_model.dart';
 import 'package:flavor_memo_app/presentation/home/home_root.dart';
 import 'package:go_router/go_router.dart';
 import '../../domain/repository/auth_repository.dart';
-import '../../domain/repository/post_repository.dart';
 import '../../presentation/login/login_screen.dart';
 import '../../presentation/home/home_view_model.dart';
 import '../../presentation/add_post/add_post_screen.dart';
@@ -37,10 +38,8 @@ class AppRouter {
         routes: [
           GoRoute(
             path: 'add',
-            builder: (context, state) => AddPostScreen(
-              authRepository: authRepository,
-              postRepository: getIt<PostRepository>(),
-            ),
+            builder: (context, state) =>
+                AddPostRoot(viewModel: getIt<AddPostViewModel>()),
           ),
         ],
       ),

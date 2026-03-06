@@ -1,3 +1,4 @@
+import 'package:flavor_memo_app/presentation/add_post/add_post_view_model.dart';
 import 'package:get_it/get_it.dart';
 import '../../domain/repository/auth_repository.dart';
 import '../../domain/repository/post_repository.dart';
@@ -35,6 +36,12 @@ void _registerViewModels() {
   // 모든 ViewModel은 registerFactory를 사용하여 호출 시마다 새로 생성되도록 합니다.
   getIt.registerFactory(
     () => HomeViewModel(
+      postRepository: getIt<PostRepository>(),
+      authRepository: getIt<AuthRepository>(),
+    ),
+  );
+  getIt.registerFactory(
+    () => AddPostViewModel(
       postRepository: getIt<PostRepository>(),
       authRepository: getIt<AuthRepository>(),
     ),
