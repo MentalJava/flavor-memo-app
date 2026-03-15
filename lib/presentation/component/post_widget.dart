@@ -1,6 +1,7 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../domain/model/post.dart';
-import 'dart:io';
 
 class PostWidget extends StatelessWidget {
   final Post post;
@@ -103,7 +104,9 @@ class PostWidget extends StatelessWidget {
   }
 
   Widget _buildImage(String path) {
-    if (path.startsWith('http')) {
+    if (path.startsWith('http://') ||
+        path.startsWith('https://') ||
+        path.startsWith('blob:')) {
       return AspectRatio(
         aspectRatio: 1,
         child: Image.network(
@@ -118,9 +121,26 @@ class PostWidget extends StatelessWidget {
         ),
       );
     } else {
+      // kIsWeb check before using File
+      if (kIsWeb) {
+        return AspectRatio(
+          aspectRatio: 1,
+          child: Image.network(
+            path,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) =>
+                const Center(child: Icon(Icons.broken_image)),
+          ),
+        );
+      }
       return AspectRatio(
         aspectRatio: 1,
-        child: Image.file(File(path), fit: BoxFit.cover),
+        child: Image.file(
+          File(path),
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) =>
+              const Center(child: Icon(Icons.broken_image)),
+        ),
       );
     }
   }

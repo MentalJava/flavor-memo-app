@@ -1,4 +1,5 @@
 import 'package:flavor_memo_app/presentation/add_post/add_post_view_model.dart';
+import 'package:flavor_memo_app/presentation/login/login_view_model.dart';
 import 'package:get_it/get_it.dart';
 import '../../domain/repository/auth_repository.dart';
 import '../../domain/repository/post_repository.dart';
@@ -45,5 +46,8 @@ void _registerViewModels() {
       postRepository: getIt<PostRepository>(),
       authRepository: getIt<AuthRepository>(),
     ),
+  );
+  getIt.registerFactory(
+    () => LoginViewModel(authRepository: getIt<AuthRepository>()),
   );
 }

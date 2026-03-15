@@ -1,10 +1,12 @@
+import 'package:flavor_memo_app/presentation/login/login_action.dart';
+import 'package:flavor_memo_app/presentation/login/login_state.dart';
 import 'package:flutter/material.dart';
-import '../../domain/repository/auth_repository.dart';
 
 class LoginScreen extends StatefulWidget {
-  final AuthRepository authRepository;
+  final LoginState state;
+  final Function(LoginAction) onAction;
 
-  const LoginScreen({super.key, required this.authRepository});
+  const LoginScreen({super.key, required this.state, required this.onAction});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -13,33 +15,31 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _isLoading = false;
 
-  Future<void> _handleLogin() async {
-    setState(() => _isLoading = true);
-    try {
-      await widget.authRepository.login(
-        _emailController.text,
-        _passwordController.text,
-      );
-      if (mounted) {
-        // GoRouter redirect will handle navigation once state changes
-        // Since we didn't implement a proper Listenable in router yet,
-        // we might need to manually trigger a rebuild or rely on GoRouter.
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('로그인 실패: $e')));
-      }
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _handleLogin() {
+    widget.onAction(
+      LoginAction.login(_emailController.text, _passwordController.text),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    // Show error message if it exists
+    if (widget.state.errorMessage != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('로그인 실패: ${widget.state.errorMessage}')),
+        );
+      });
+    }
+
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
@@ -78,14 +78,14 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: _isLoading ? null : _handleLogin,
+                onPressed: widget.state.isLoading ? null : _handleLogin,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: _isLoading
+                child: widget.state.isLoading
                     ? const CircularProgressIndicator()
                     : const Text('로그인', style: TextStyle(fontSize: 18)),
               ),

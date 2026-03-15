@@ -15,7 +15,10 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Flavor Memo'),
         actions: [
-          IconButton(icon: const Icon(Icons.logout), onPressed: () async {}),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () => onAction(const HomeAction.logOut()),
+          ),
         ],
       ),
       body: state.isLoading

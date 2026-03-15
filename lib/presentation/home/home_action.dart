@@ -6,4 +6,5 @@ part 'home_action.freezed.dart';
 sealed class HomeAction with _$HomeAction {
   const factory HomeAction.addPost() = AddPost;
   const factory HomeAction.loadPosts() = LoadPosts;
+  const factory HomeAction.logOut() = LogOut;
 }

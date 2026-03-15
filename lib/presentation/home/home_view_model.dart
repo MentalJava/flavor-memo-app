@@ -20,7 +20,14 @@ class HomeViewModel extends ChangeNotifier {
         break;
       case AddPost():
         break;
+      case LogOut():
+        _logOut();
+        break;
     }
+  }
+
+  Future<void> _logOut() async {
+    await authRepository.logout();
   }
 
   Future<void> fetchPosts() async {
