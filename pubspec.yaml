@@ -39,6 +39,9 @@ dependencies:
   google_fonts: ^8.0.2
   freezed_annotation: ^3.1.0
   get_it: ^9.2.1
+  firebase_core: ^3.9.0
+  firebase_auth: ^5.3.4
+  cloud_firestore: ^5.6.0
 
 dev_dependencies:
   flutter_test:
