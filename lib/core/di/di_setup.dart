@@ -1,3 +1,9 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flavor_memo_app/data/repository/firebase_auth_repository_impl.dart';
+import 'package:flavor_memo_app/data/repository/firestore_post_repository_impl.dart';
 import 'package:flavor_memo_app/presentation/add_post/add_post_view_model.dart';
 import 'package:flavor_memo_app/presentation/login/login_view_model.dart';
 import 'package:get_it/get_it.dart';
@@ -19,17 +25,42 @@ void _registerRepositories() {
   final flavor = FlavorConfig.appFlavor;
 
   switch (flavor) {
-    case Flavor.dev:
-    case Flavor.staging:
     case Flavor.prod:
+      // Prod: 실제 Firebase 서버 연동
+      getIt.registerLazySingleton<AuthRepository>(
+        () => FirebaseAuthRepositoryImpl(FirebaseAuth.instance),
+      );
+      getIt.registerLazySingleton<PostRepository>(
+        () => FirestorePostRepositoryImpl(FirebaseFirestore.instance),
+      );
+      break;
+
+    case Flavor.staging:
+      // Staging: Firebase Emulator 연동
+      final host = kIsWeb
+          ? 'localhost'
+          : (Platform.isAndroid ? '10.0.2.2' : 'localhost');
+      FirebaseAuth.instance.useAuthEmulator(host, 9099);
+      FirebaseFirestore.instance.useFirestoreEmulator(host, 8080);
+
+      getIt.registerLazySingleton<AuthRepository>(
+        () => FirebaseAuthRepositoryImpl(FirebaseAuth.instance),
+      );
+      getIt.registerLazySingleton<PostRepository>(
+        () => FirestorePostRepositoryImpl(FirebaseFirestore.instance),
+      );
+      break;
+
+    case Flavor.dev:
     case null:
-      // 현재는 모든 환경에서 Mock을 사용하지만, 실제 환경 분기가 필요한 경우 여기서 처리합니다.
+      // Dev: Mock 데이터 사용
       getIt.registerLazySingleton<AuthRepository>(
         (() => MockAuthRepositoryImpl()),
       );
       getIt.registerLazySingleton<PostRepository>(
         () => MockPostRepositoryImpl(),
       );
+      break;
   }
 }
 
