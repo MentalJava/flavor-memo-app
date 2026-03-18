@@ -9,7 +9,8 @@ class FirebaseAuthRepositoryImpl implements AuthRepository {
   FirebaseAuthRepositoryImpl(this._auth);
 
   @override
-  Stream<User?> get userStatus => throw UnimplementedError();
+  Stream<User?> get userStatus =>
+      _auth.authStateChanges().map((firebaseUser) => firebaseUser?.toUser());
 
   @override
   Future<User?> login(String email, String password) async {
@@ -26,5 +27,5 @@ class FirebaseAuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  User? get currentUser => throw UnimplementedError();
+  User? get currentUser => _auth.currentUser?.toUser();
 }
