@@ -41,7 +41,12 @@ void _registerRepositories() {
           ? 'localhost'
           : (Platform.isAndroid ? '10.0.2.2' : 'localhost');
       FirebaseAuth.instance.useAuthEmulator(host, 9099);
-      FirebaseFirestore.instance.useFirestoreEmulator(host, 8080);
+      FirebaseFirestore.instance.settings = Settings(
+        host: '$host:8081',
+        sslEnabled: false,
+        persistenceEnabled: false,
+      );
+      // FirebaseFirestore.instance.useFirestoreEmulator(host, 8081); // 8081 포트로 명시적 설정 대체
 
       getIt.registerLazySingleton<AuthRepository>(
         () => FirebaseAuthRepositoryImpl(FirebaseAuth.instance),
